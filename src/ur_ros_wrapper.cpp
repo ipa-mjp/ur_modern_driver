@@ -443,6 +443,11 @@ private:
 				return false;
 			}
 		}
+		ROS_INFO("VALIDATING JOINT NAMES");
+		for (unsigned int i = 0; i < goal.trajectory.joint_names.size(); i++) {
+
+			ROS_INFO_STREAM("JOINT NAME:"<<actual_joint_names.at(i));
+		}
 
 		return true;
 	}
@@ -669,6 +674,7 @@ private:
 			joint_msg.position =
 					robot_.rt_interface_->robot_state_->getQActual();
 			for (unsigned int i = 0; i < joint_msg.position.size(); i++) {
+				ROS_INFO("%s",joint_msg.name[i].c_str());
 				joint_msg.position[i] += joint_offsets_[i];
 			}
 			joint_msg.velocity =
