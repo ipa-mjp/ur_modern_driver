@@ -15,15 +15,22 @@
   <arg name="prefix" default="" />
   <arg name="max_velocity" default="10.0"/> <!-- [rad/s] -->
   <arg name="base_frame" default="$(arg prefix)base" />
-  <arg name="tool_frame" default="$(arg prefix)tool0_controller" />
+  <arg name="tool_frame" default="$(arg prefix)tool0" />
   <arg name="shutdown_on_disconnect" default="true" />
-  <arg name="controllers" default="joint_state_controller joint_group_velocity_controller"/>
-  <arg name="stopped_controllers" default="joint_trajectory_controller"/>
+  <arg name="controllers" default="joint_state_controller vel_based_pos_traj_controller"/>
+  <arg name="stopped_controllers" default="pos_based_pos_traj_controller"/>
+
   <!-- robot model -->
   <include file="$(find ur_description)/launch/ur10_upload.launch">
     <arg name="limited" value="$(arg limited)"/>
   </include>
 
+  <!-- robot state publisher -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="50.0" />
+    <param name="tf_prefix" type="string" value="" />
+    <!--remap from="joint_states" to="/arm/joint_states"/-->
+  </node>
 
   <!-- Load hardware interface -->
   <node name="ur_hardware_interface" pkg="ur_modern_driver" type="ur_driver" output="log" launch-prefix="$(arg launch_prefix)">
@@ -43,14 +50,7 @@
 
   <!-- Load controller settings -->
   <rosparam file="$(find ur_modern_driver)/config/ur10_cob_controllers.yaml" command="load"/>
-
-  <!-- spawn controller manager -->
-  <node name="ros_control_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="$(arg controllers)" />
-
-  <!-- load other controller -->
-  <node name="ros_control_controller_manager" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="load $(arg stopped_controllers)" />
-
-  <!-- Convert joint states to /tf tranforms -->
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+  <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn joint_state_controller" respawn="false" output="screen"/>
+  <node name="cob_control_mode_adapter_node" pkg="cob_control_mode_adapter" type="cob_control_mode_adapter_node" cwd="node" respawn="false" output="screen"/>
 
 </launch>

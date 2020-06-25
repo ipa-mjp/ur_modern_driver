@@ -1,0 +1,123 @@
+## joint_names
+joint_names: [shoulder_1_joint, shoulder_2_joint, shoulder_3_joint, wrist_1_joint, wrist_2_joint, wrist_3_joint]
+
+# Settings for ros_control control loop
+hardware_control_loop:
+   loop_hz: 125
+
+# Settings for ros_control hardware interface
+hardware_interface:
+   joints:
+     - shoulder_1_joint
+     - shoulder_2_joint
+     - shoulder_3_joint
+     - wrist_1_joint
+     - wrist_2_joint
+     - wrist_3_joint
+
+## control_mode_adapter
+max_command_silence: 0.5
+
+## joint_state_controller
+joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+## joint trajectory controller
+joint_trajectory_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+     - shoulder_1_joint
+     - shoulder_2_joint
+     - shoulder_3_joint
+     - wrist_1_joint
+     - wrist_2_joint
+     - wrist_3_joint
+  constraints:
+      goal_time: 0.6
+      stopped_velocity_tolerance: 0.05
+      shoulder_1_joint : {trajectory: 0.1, goal: 0.1}
+      shoulder_2_joint : {trajectory: 0.1, goal: 0.1}
+      shoulder_3_joint : {trajectory: 0.1, goal: 0.1}
+      wrist_1_joint    : {trajectory: 0.1, goal: 0.1}
+      wrist_2_joint    : {trajectory: 0.1, goal: 0.1}
+      wrist_3_joint    : {trajectory: 0.1, goal: 0.1}
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10
+  required_drive_mode: 7
+
+
+## position controller
+joint_group_position_controller:
+  type: position_controllers/JointGroupPositionController
+  joints:
+     - shoulder_1_joint
+     - shoulder_2_joint
+     - shoulder_3_joint
+     - wrist_1_joint
+     - wrist_2_joint
+     - wrist_3_joint
+  required_drive_mode: 1
+
+shoulder_1_joint_position_controller:
+  type: position_controllers/JointPositionController
+  joint: shoulder_1_joint
+  required_drive_mode: 1
+shoulder_2_joint_position_controller:
+  type: position_controllers/JointPositionController
+  joint: shoulder_2_joint
+  required_drive_mode: 1
+shoulder_3_joint_position_controller:
+  type: position_controllers/JointPositionController
+  joint: shoulder_3_joint
+  required_drive_mode: 1
+wrist_1_joint_position_controller:
+  type: position_controllers/JointPositionController
+  joint: wrist_1_joint
+  required_drive_mode: 1
+wrist_2_joint_position_controller:
+  type: position_controllers/JointPositionController
+  joint: wrist_2_joint
+  required_drive_mode: 1
+wrist_3_joint_position_controller:
+  type: position_controllers/JointPositionController
+  joint: wrist_3_joint
+  required_drive_mode: 1
+
+## velocity controller
+joint_group_velocity_controller:
+  type: velocity_controllers/JointGroupVelocityController
+  joints:
+     - shoulder_1_joint
+     - shoulder_2_joint
+     - shoulder_3_joint
+     - wrist_1_joint
+     - wrist_2_joint
+     - wrist_3_joint
+  required_drive_mode: 2
+
+shoulder_1_joint_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: shoulder_1_joint
+  required_drive_mode: 2
+shoulder_2_joint_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: shoulder_2_joint
+  required_drive_mode: 2
+shoulder_3_joint_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: shoulder_3_joint
+  required_drive_mode: 2
+wrist_1_joint_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: wrist_1_joint
+  required_drive_mode: 2
+wrist_2_joint_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: wrist_2_joint
+  required_drive_mode: 2
+wrist_3_joint_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: wrist_3_joint
+  required_drive_mode: 2
