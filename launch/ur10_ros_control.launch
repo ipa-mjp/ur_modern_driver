@@ -19,6 +19,12 @@
   <arg name="shutdown_on_disconnect" default="true" />
   <arg name="controllers" default="joint_state_controller joint_trajectory_controller"/>
   <arg name="stopped_controllers" default="joint_group_velocity_controller"/>
+
+
+  <arg name="comport" default="/dev/ttyUSB0"/>
+  <arg name="baud" default="115200"/>
+  <arg name="run_test" default="true"/>
+
   <!-- robot model -->
   <include file="$(find ur_description)/launch/ur10_upload.launch">
     <arg name="limited" value="$(arg limited)"/>
@@ -39,6 +45,7 @@
     <param name="base_frame" type="str" value="$(arg base_frame)"/>
     <param name="tool_frame" type="str" value="$(arg tool_frame)"/>
     <param name="shutdown_on_disconnect" type="bool" value="$(arg shutdown_on_disconnect)"/>
+    <remap from="/joint_states" to="/arm/joint_states"/>
   </node>
 
   <!-- Load controller settings -->
@@ -50,7 +57,20 @@
   <!-- load other controller -->
   <node name="ros_control_controller_manager" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="load $(arg stopped_controllers)" />
 
+  <!-- Robotiq 85 ROS Driver -->
+  <node pkg="robotiq_85_driver" type="robotiq_85_driver" name="robotiq_85_driver" respawn="true" output="screen">
+    <param name="num_grippers" value="1"/>
+    <param name="comport" value="$(arg comport)" />
+    <param name="baud" value="$(arg baud)" />
+  </node>
+
   <!-- Convert joint states to /tf tranforms -->
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen"/>
+
+  <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher" output="screen">
+          <remap from="robot_description" to="/robot_description"/>
+          <remap from="joint_states" to="/joint_states"/>
+          <rosparam command="load" file="$(find ur_modern_driver)/config/joint_state_publisher.yaml"/>
+  </node>
 
 </launch>
