@@ -64,6 +64,10 @@
     <param name="baud" value="$(arg baud)" />
   </node>
 
+  <!-- Robotiq 85 Gripper action server -->
+  <node pkg="robotiq_85_driver" type="robotiq_85_action_server" name="robotiq_85_action_server" respawn="true" output="screen">
+  </node>
+
   <!-- Convert joint states to /tf tranforms -->
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen"/>
 
