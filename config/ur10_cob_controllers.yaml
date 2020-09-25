@@ -21,11 +21,11 @@ max_command_silence: 0.5
 ## joint_state_controller
 joint_state_controller:
     type: joint_state_controller/JointStateController
-    publish_rate: 50
+    publish_rate: 125
 
 ## joint trajectory controller
 joint_trajectory_controller:
-  type: position_controllers/JointTrajectoryController
+  type: velocity_controllers/JointTrajectoryController
   joints:
      - shoulder_1_joint
      - shoulder_2_joint
@@ -43,10 +43,26 @@ joint_trajectory_controller:
       wrist_2_joint    : {trajectory: 0.1, goal: 0.1}
       wrist_3_joint    : {trajectory: 0.1, goal: 0.1}
   stop_trajectory_duration: 0.5
-  state_publish_rate:  25
+  state_publish_rate:  125
   action_monitor_rate: 10
   required_drive_mode: 7
+  gains:
+      #!!These values have not been optimized!!
+      shoulder_1_joint: {p: 5.0,  i: 0.05, d: 0.1, i_clamp: 1}
+      shoulder_2_joint: {p: 5.0,  i: 0.05, d: 0.1, i_clamp: 1}
+      shoulder_3_joint: {p: 5.0,  i: 0.05, d: 0.1, i_clamp: 1}
+      wrist_1_joint: {p: 5.0,  i: 0.05, d: 0.1, i_clamp: 1}
+      wrist_2_joint: {p: 5.0,  i: 0.05, d: 0.1, i_clamp: 1}
+      wrist_3_joint: {p: 5.0,  i: 0.05, d: 0.1, i_clamp: 1}
 
+  # Use a feedforward term to reduce the size of PID gains
+  velocity_ff:
+      shoulder_1_joint: 1.0
+      shoulder_2_joint: 1.0
+      shoulder_3_joint: 1.0
+      wrist_1_joint: 1.0
+      wrist_2_joint: 1.0
+      wrist_3_joint: 1.0
 
 ## position controller
 joint_group_position_controller:
